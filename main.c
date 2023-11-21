@@ -10,11 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.c"
+#include "get_next_line.h"
 #include <stdio.h>
 #include <fcntl.h>
 
-int	main(void)
+/*int	main(void)
 {
  	char	*line;
  	int		i;
@@ -22,7 +22,7 @@ int	main(void)
 
 	i = 1;
  	fd = open("foo2.txt", O_RDONLY);
- //	line = (char *)-1;
+//	line = (char *)-1;
  	while (line)
  	{
  		line = get_next_line(fd);
@@ -34,25 +34,25 @@ int	main(void)
  	free(line);
  	close(fd);
  	return (0);
-}
+}*/
 
-/*int	main(void)
+int	main(void)
 {
  	char	*line;
  	int		i;
  	int		fd;
 
 	i = 0;
- 	fd = open("foo2.txt", O_RDONLY);
- 	line = (char *)-1;
- 	while (line)
- 	{
- 		line = get_next_line(fd);
- 		if (!line)
- 			break ;
- 		printf("[%02d] -> %s", i++, line);
- 	}
- 	free(line);
- 	close(fd);
- 	return (0);
-}*/
+	fd = open("foo2.txt", O_RDONLY);
+ 	line = "Existencia";
+	while (line)
+	{
+		line = get_next_line(fd);
+		if (!line)
+			break ;
+		printf("[%02d] -> %s", i++, line);
+	}
+	free(line);
+	close(fd);
+	return (0);
+}

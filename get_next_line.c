@@ -14,74 +14,96 @@
 #include "get_next_line.h"
 //#include <stdio.h>
 
-/*static int	prf_ptr(unsigned long v)
+static char	*ft_clean_chunk(char *chunk)
 {
-	int	l;
+	char	*newchunk;
+	int		i;
+	int		j;
 
-	if (!v)
-		l = write(1, "(nil)", 5);
-	else
+	i = 0;
+	while (chunk[i] != '\0' && chunk[i] != '\n')
+		i++;
+	if (chunk[i] == '\0')
 	{
-		l = write(1, "0x", 2);
-		l += ft_putnbr_lbase_fd(v, HEXA_LOW, 1);
+		free(chunk);
+		return (NULL);
 	}
-	return (l);
+	newchunk = malloc((ft_strlen(chunk) - i) * sizeof(char));
+	if (!newchunk)
+		return (NULL);
+	j = 0;
+	i++;
+	while (chunk[i] != '\0')
+		newchunk[j++] = chunk[i++];
+	newchunk[j] = '\0';
+	free(chunk);
+	return (newchunk);
 }
 
-static int	check_format(const char c, va_list args)
-{
-	int	p;
-
-	p = -2;
-	if (c == 'd' || c == 'i')
-		p += ft_putnbr_fd((long)va_arg(args, int), 1);
-	else if (c == 'u')
-		p += ft_putnbr_ubase_fd(va_arg(args, unsigned int), DECIMAL, 1);
-	else if (c == 'x')
-		p += ft_putnbr_ubase_fd(va_arg(args, unsigned int), HEXA_LOW, 1);
-	else if (c == 'X')
-		p += ft_putnbr_ubase_fd(va_arg(args, unsigned int), HEXA_UPP, 1);
-	else if (c == 'c')
-		p += ft_putchar_fd(va_arg(args, int), 1);
-	else if (c == 's')
-		p += ft_putstr_fd(va_arg(args, char *), 1);
-	else if (c == 'p')
-		p += prf_ptr(va_arg(args, unsigned long));
-	else
-		p += ft_putchar_fd(c, 1);
-	return (p);
-}*/
-
-char	*get_next_line(int fd)
+static char	*ft_trim_line(char *chunk)
 {
 	char	*line;
-//	int		i;
-//	int		p;
+	int		i;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	i = 0;
+	if (!chunk[i])
 		return (NULL);
-/*	i = 0;
-	p = 0;
-	while (string[i] != '\0')
-	{
-		if (string[i] == '%')
-		{
-			i++;
-			if (ft_strchr(CONVERSION, string[i]))
-				p += check_format(string[i], args);
-			else
-				ft_putchar_fd(string[i], 1);
-		}
-		else
-			ft_putchar_fd(string[i], 1);
+	while (chunk[i] != '\0' && chunk[i] != '\n')
 		i++;
-	}*/
+	if (chunk[i] == '\n')
+		line = malloc(sizeof(char) * (i + 2));
+	else
+		line = malloc(sizeof(char) * (i + 1));
+	if (!line)
+		return (NULL);
+	i = 0;
+	while (chunk[i] != '\0' && chunk[i] != '\n')
+	{
+		line[i] = chunk[i];
+		i++;
+	}
+	if (chunk[i] == '\n')
+		line[i++] = '\n';
+	line[i] = '\0';
 	return (line);
 }
 
-/*ssize_t	read(int fd, void *buff, size_t count)
+static char	*ft_get_chunk(int fd, char *chunk)
+{
+	char	*buff;
+	int		i;
 
-fd = file descriptor
-buff = read data will be stored here
-count = number of bytes to read (buffer size)
-*/
+	buff = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (!buff)
+		return (NULL);
+	i = 1;
+	while (!ft_strchr(chunk, '\n') && i != 0)
+	{
+		i = read(fd, buff, BUFFER_SIZE);
+		if (i < 0)
+		{
+			free(buff);
+			free(chunk);
+			return (NULL);
+		}
+		buff[i] = '\0';
+		chunk = ft_strbuild(chunk, buff);
+	}
+	free(buff);
+	return (chunk);
+}
+
+char	*get_next_line(int fd)
+{
+	char		*line;
+	static char	*chunk;
+
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
+	chunk = ft_get_chunk(fd, chunk);
+	if (!chunk)
+		return (NULL);
+	line = ft_trim_line(chunk);
+	chunk = ft_clean_chunk(chunk);
+	return (line);
+}
