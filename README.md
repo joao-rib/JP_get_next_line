@@ -19,7 +19,7 @@ Function | Format | Modified?
 --- | --- | ---
 ft_strlen | `size_t	ft_strlen(const char *str)` | Same as libft
 ft_strchr | `char	*ft_strchr(const char *str, int c)` | Function now returns 0 on error
-ft_strlcat | `size_t	ft_strlcat(char *dest, const char *src, size_t size)` | Same as libft
+ft_strlcat | `size_t	ft_strlcat(char *dest, const char *src, size_t size, size_t d)` | Altered for efficiency: Function now always returns 0; Variable d is now a parameter.
 
 ### New functions
 
