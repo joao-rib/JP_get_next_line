@@ -25,5 +25,4 @@ ft_strlcat | `size_t	ft_strlcat(char *dest, const char *src, size_t size, size_t
 
 Function | Format | Description | Return
 --- | --- | --- | ---
-
 ft_strbuild | `char	*ft_strbuild(char *s1, const char *s2)` | Concatenates s1 and s2 into a new string. Allows s1 to be modified. [requires malloc] | New joined string
