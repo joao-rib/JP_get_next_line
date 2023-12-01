@@ -10,9 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-//#include "libft.h"
-#include "get_next_line.h"
-//#include <stdio.h>
+#include "get_next_line_bonus.h"
 
 static char	*ft_clean_chunk(char *chunk)
 {
@@ -96,14 +94,14 @@ static char	*ft_get_chunk(int fd, char *chunk)
 char	*get_next_line(int fd)
 {
 	char		*line;
-	static char	*chunk;
+	static char	*chunk[MAXFD];
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || fd > MAXFD)
 		return (NULL);
-	chunk = ft_get_chunk(fd, chunk);
-	if (!chunk)
+	chunk[fd] = ft_get_chunk(fd, chunk[fd]);
+	if (!chunk[fd])
 		return (NULL);
-	line = ft_trim_line(chunk);
-	chunk = ft_clean_chunk(chunk);
+	line = ft_trim_line(chunk[fd]);
+	chunk[fd] = ft_clean_chunk(chunk[fd]);
 	return (line);
 }
